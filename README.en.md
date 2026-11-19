@@ -4,6 +4,12 @@ A local file-operation MCP server implemented as a single-file ESM module (stdio
 
 Core positioning: **the write boundary is enforced by the tool** — read paths are unlimited, while write-type operations may only land inside the configured write roots (`writeRoots`); combined with unique matching, idempotency, atomic writes and encoding / line-ending fidelity, it keeps both classes of accident ("changed the wrong thing" and "corrupted the thing") out at the tool layer.
 
+> **Requirements**: Node.js ≥ 20; **Windows only**.
+> **Dependencies**: `@modelcontextprotocol/sdk` is required; `iconv-lite` is optional (without it, GB18030 / Big5 encoding/decoding degrades — see §4 and §7.2).
+> **External programs** (optional, install as needed): `pandoc` for `convert_document`, `typst` for PDF output, `git` for `diff`. All three are looked up on `PATH` first and can be pinned via `PANDOC_PATH` / `TYPST_PATH` / `GIT_PATH`; **if one is missing, only the tool that needs it returns `dependency_unavailable` — nothing else is affected**.
+> **Platform scope**: **Windows only**. `trash` relies on the Windows recycle bin and PowerShell — on Linux / macOS the capability probe always fails, so `trash` and overwriting `move` **degrade to a permanent delete** (returning `deleted-permanently` + `recyclable:false` + `warning`; they never falsely report `sent-to-recycle-bin`). Paths follow Windows drive-letter semantics (`C:\...`).
+> **First use**: copy `protected.example.json` to `protected.json` and fill in `writeRoots` — the template ships an empty array, which **denies every write** (see §9).
+
 ## 1. Design principles
 
 | Principle | Meaning |
@@ -428,6 +434,12 @@ Before **every evaluation** the server compares the mtime + size of `protected.j
 8. **The audit log writes nothing to disk by default** (`enabled:false`, `logPath:null`); once enabled, response bodies carry `auditLogged`/`auditRotated`/`auditPrevious` (when it is not enabled, `auditLogged` does not appear). **The example rules contain no rule protecting the audit log, so add one yourself after enabling it** (§10.1).
 9. **The recoverability of `trash` depends on the executing process's permissions**: when the probe says unavailable it degrades truthfully (`deleted-permanently` + `recyclable:false` + `warning`) and never falsely claims `sent-to-recycle-bin`; when a hard guarantee is needed, set `FOP_REQUIRE_RECYCLE_BIN=1`.
 10. **`FOP_TEST_RB_CAP` is an internal test hook**: set to `0` it forces the recycle-bin capability probe to report unavailable, for exercising the degraded path; **do not set it in normal use**.
+
+## Project status
+
+A personal project, maintained on an as-needed basis. No commitment to response times or long-term support. Suitable for direct use or forking; not recommended as a critical dependency.
+
+---
 
 ## 12. License
 

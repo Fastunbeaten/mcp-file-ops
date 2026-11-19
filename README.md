@@ -4,6 +4,12 @@
 
 核心定位：**写边界由工具强制**——读路径不限，写类操作只能落在配置的写根（`writeRoots`）内；配合唯一匹配、幂等、原子写与编码/换行保真，把「改错」与「改坏」两类事故挡在工具层。
 
+> **运行要求**：Node.js ≥ 20；**仅 Windows**。
+> **依赖**：必须安装 `@modelcontextprotocol/sdk`；`iconv-lite` 可选（缺失时 GB18030 / Big5 编解码降级，见 §4 与 §7.2）。
+> **外部程序**（非必需，按需安装）：`pandoc` 供 `convert_document` 转换文档、`typst` 供输出 PDF、`git` 供 `diff`。三者都先扫 `PATH`，可用 `PANDOC_PATH` / `TYPST_PATH` / `GIT_PATH` 显式指定；**缺失时只有对应工具返回 `dependency_unavailable`，其余工具不受影响**。
+> **平台范围**：**Windows 专用**。`trash` 依赖 Windows 回收站与 PowerShell——在 Linux / macOS 上回收站探测必然失败，`trash` 与覆盖式 `move` 会**降级为永久删除**（返回 `deleted-permanently` + `recyclable:false` + `warning`，绝不谎报 `sent-to-recycle-bin`）。路径按 Windows 盘符语义处理（`C:\...`）。
+> **首次使用**：必须先把 `protected.example.json` 复制为 `protected.json` 并填好 `writeRoots`——模板里是空数组，**等于拒绝一切写入**（见 §9）。
+
 ## 1. 设计原则
 
 | 原则 | 含义 |
@@ -428,6 +434,12 @@ node <包目录>/manage-rules.mjs verify
 8. **审计日志默认不落盘**（`enabled:false`、`logPath:null`）；开启后返回体带 `auditLogged`/`auditRotated`/`auditPrevious`（未启用时 `auditLogged` 不出现）。**示例规则里没有保护审计日志的规则，开启后请自行加一条**（§10.1）。
 9. **`trash` 的可恢复性取决于执行进程权限**：探测为不可用即如实降级（`deleted-permanently` + `recyclable:false` + `warning`），绝不谎报 `sent-to-recycle-bin`；需要硬保证就开 `FOP_REQUIRE_RECYCLE_BIN=1`。
 10. **`FOP_TEST_RB_CAP` 是内部测试钩子**：设为 `0` 可强制「回收站能力探测」判为不可用，用于验证降级路径；**正常使用不要设置**。
+
+## 项目性质
+
+个人项目，按需维护，不承诺响应时限与长期支持。适合直接使用或 fork 自建，不建议作为关键依赖。
+
+---
 
 ## 12. 许可
 
