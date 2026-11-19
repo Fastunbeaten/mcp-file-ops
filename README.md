@@ -322,6 +322,8 @@ device_path_check → realpath_check → write_root_check → sensitive_pattern_
 
 服务是 **stdio 传输**、**长驻进程**：被客户端拉起后一直运行，改 `index.mjs` 必须重启客户端才生效（改 `protected.json` 是热加载，见 §10.3）。
 
+**安装**：`npm install -g mcp-file-ops`（也可从仓库检出直接 `node index.mjs` 运行，无需安装）。**首次使用必须先建配置**——把 `protected.example.json` 复制为 `protected.json` 并填好 `writeRoots`（模板里是空数组，等于拒绝一切写入）；配置路径也可用环境变量 `FILEOPS_CONFIG` 指向别处。
+
 **只读模式**：支持 `--readonly` 启动参数——只注册 **7 个只读工具**（`read_text` / `get_file_info` / `list_directory` / `find_files` / `count_text` / `diff` / `list_protected`），调用写类工具会被拦截。适合纯检索场景。
 
 ### 9.1 作为 MCP 客户端注册
@@ -431,5 +433,5 @@ node <包目录>/manage-rules.mjs verify
 
 MIT，完整条款见 `LICENSE`。
 
-- 包名 `@fastunbeaten/mcp-file-ops`，版本 `0.1.0`；`engines.node >= 20`；运行时依赖 `@modelcontextprotocol/sdk`（`1.32.2`），可选依赖 `iconv-lite`（缺失时编码能力降级，见 §4 / §7.2）。
+- 包名 `mcp-file-ops`，版本 `0.1.1`；`engines.node >= 20`；运行时依赖 `@modelcontextprotocol/sdk`（`1.32.2`），可选依赖 `iconv-lite`（缺失时编码能力降级，见 §4 / §7.2）。
 - 实现参考 `@modelcontextprotocol/server-filesystem`（MIT）的**公开行为**，按行为自行实现，未复制其源码。

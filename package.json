@@ -1,6 +1,6 @@
 {
-  "name": "@fastunbeaten/mcp-file-ops",
-  "version": "0.1.0",
+  "name": "mcp-file-ops",
+  "version": "0.1.1",
   "description": "Local file-operation MCP server: write-root containment, protected rules, recycle-bin-aware deletion, encoding-aware text editing and document conversion.",
   "type": "module",
   "bin": { "mcp-file-ops": "index.mjs" },

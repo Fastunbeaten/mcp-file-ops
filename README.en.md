@@ -322,6 +322,8 @@ The two groups of range parameters are **mutually exclusive**; passing both → 
 
 The server uses **stdio transport** and is a **long-running process**: once the client has started it, it keeps running, so changing `index.mjs` requires restarting the client to take effect (changing `protected.json` is a hot reload, see §10.3).
 
+**Install**: `npm install -g mcp-file-ops` (or run `node index.mjs` from a checkout — no install needed). **A config file is required on first use**: copy `protected.example.json` to `protected.json` and fill in `writeRoots` (the template ships an empty array, which denies all writes). The config path can also be set via the `FILEOPS_CONFIG` environment variable.
+
 **Read-only mode**: the `--readonly` startup flag is supported — only the **7 read-only tools** are registered (`read_text` / `get_file_info` / `list_directory` / `find_files` / `count_text` / `diff` / `list_protected`), and calls to write-type tools are blocked. Suits purely retrieval scenarios.
 
 ### 9.1 Registering as an MCP client
@@ -431,5 +433,5 @@ Before **every evaluation** the server compares the mtime + size of `protected.j
 
 MIT; see `LICENSE` for the full terms.
 
-- Package name `@fastunbeaten/mcp-file-ops`, version `0.1.0`; `engines.node >= 20`; runtime dependency `@modelcontextprotocol/sdk` (`1.32.2`), optional dependency `iconv-lite` (when missing, encoding support degrades, see §4 / §7.2).
+- Package name `mcp-file-ops`, version `0.1.1`; `engines.node >= 20`; runtime dependency `@modelcontextprotocol/sdk` (`1.32.2`), optional dependency `iconv-lite` (when missing, encoding support degrades, see §4 / §7.2).
 - The implementation takes the **public behavior** of `@modelcontextprotocol/server-filesystem` (MIT) as a reference and implements it from behavior; no source code was copied.
