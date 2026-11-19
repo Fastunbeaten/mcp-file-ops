@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "writeRoots": [],
+  "batchLimits": { "trash": 500, "move": 200, "edits": 50, "editPaths": 20, "editTotalReplacements": 200, "maxEditableBytes": 8388608, "failureDetailFiles": 10 },
+  "readCaps": { "maxLines": 2000, "maxBytes": 65536 },
+  "audit": { "enabled": false, "logPath": null, "retentionDays": 6, "maxBytes": 20971520, "summaryOnRotate": true },
+  "rules": [
+    { "id": "R3", "scope": "directory", "pattern": "**/node_modules/**", "patterns": ["**/node_modules/**", "**/node_modules"], "deny": ["trash", "move"], "reason": "依赖目录，误删需重装" },
+    { "id": "R4", "scope": "directory", "pattern": "**/.git/**", "patterns": ["**/.git/**", "**/.git"], "deny": ["trash", "move"], "reason": "版本库内部结构" },
+    { "id": "R5", "scope": "file", "pattern": "**/*.credentials.yaml", "deny": ["read", "list", "write", "edit", "trash", "move"], "reason": "凭据文件，禁止读取与外泄" },
+    { "id": "R8", "scope": "file", "pattern": "**/.env*", "deny": ["read", "list", "write", "edit", "trash", "move"], "reason": "环境变量与密钥" },
+    { "id": "R9", "scope": "directory", "pattern": "**/.ssh/**", "patterns": ["**/.ssh/**", "**/.ssh"], "deny": ["read", "list", "write", "edit", "trash", "move"], "reason": "SSH 密钥目录" },
+    { "id": "R10", "scope": "directory", "pattern": "**/.aws/**", "patterns": ["**/.aws/**", "**/.aws"], "deny": ["read", "list", "write", "edit", "trash", "move"], "reason": "AWS 凭据目录" },
+    { "id": "R11", "scope": "file", "pattern": "**/*.pem", "deny": ["read", "list", "write", "edit", "trash", "move"], "reason": "证书与私钥" },
+    { "id": "R12", "scope": "file", "pattern": "**/*.key", "deny": ["read", "list", "write", "edit", "trash", "move"], "reason": "密钥文件" },
+    { "id": "R15", "scope": "directory", "pattern": "**/.npm-cache/**", "patterns": ["**/.npm-cache/**", "**/.npm-cache", "**/.pnpm-store/**", "**/.pnpm-store", "**/.cache/**", "**/.cache"], "deny": ["trash", "move"], "reason": "包管理器缓存目录：内容可重新生成，不值得纳入常规检索与备份；本规则仅禁止删除/搬走目录本身，不限制读取、列举与显式检索（与 R3 的 node_modules 同款语义）" }
+  ]
+}
